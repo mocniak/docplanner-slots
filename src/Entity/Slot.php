@@ -5,70 +5,57 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\SlotRepository")
+ * @ORM\Entity()
  */
 class Slot
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ORM\Column(type="string")
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $dateFrom;
+    private \DateTimeImmutable $startTime;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $dateTo;
+    private \DateTimeImmutable $endTime;
 
     /**
      * @ORM\Column(type="integer")
      */
     private $doctorId;
 
-    public function getId(): ?int
+    public function __construct(string $id, \DateTimeImmutable $startTime, \DateTimeImmutable $endTime, int $doctorId)
+    {
+        $this->id = $id;
+        $this->startTime = $startTime;
+        $this->endTime = $endTime;
+        $this->doctorId = $doctorId;
+    }
+
+    public function id(): string
     {
         return $this->id;
     }
 
-    public function getDateFrom(): ?\DateTimeInterface
+    public function startTime(): \DateTimeImmutable
     {
-        return $this->dateFrom;
+        return $this->startTime;
     }
 
-    public function setDateFrom(\DateTimeInterface $dateFrom): self
+    public function endTime(): \DateTimeImmutable
     {
-        $this->dateFrom = $dateFrom;
-
-        return $this;
+        return $this->endTime;
     }
 
-    public function getDateTo(): ?\DateTimeInterface
-    {
-        return $this->dateTo;
-    }
-
-    public function setDateTo(\DateTimeInterface $dateTo): self
-    {
-        $this->dateTo = $dateTo;
-
-        return $this;
-    }
-
-    public function getDoctorId(): ?int
+    public function doctorId(): int
     {
         return $this->doctorId;
-    }
-
-    public function setDoctorId(int $doctorId): self
-    {
-        $this->doctorId = $doctorId;
-
-        return $this;
     }
 }

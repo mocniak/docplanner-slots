@@ -20,4 +20,12 @@ class InMemorySlotRepository implements SlotRepository
     {
         $this->slots[] = $slot;
     }
+
+    /**
+     * @return Slot[]
+     */
+    public function findForDoctor(int $doctorId):array
+    {
+        return $this->slots;
+    }
 }
