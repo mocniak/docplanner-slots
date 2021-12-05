@@ -15,6 +15,15 @@ final class SlotsCollection
         $this->slots[] = $slot;
     }
 
+    /**
+     * @param Slot[] $slots
+     */
+    public static function fromArray(array $slots): self {
+        $newSlots = new self();
+        $newSlots->slots = $slots;
+        return $newSlots;
+    }
+
     public function getSlots(): array
     {
         return $this->slots;

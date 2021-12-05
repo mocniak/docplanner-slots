@@ -11,9 +11,9 @@ class HttpSupplierApi implements SupplierAPI
     public function __construct()
     {
         $this->client = new Client([
-            'base_uri' => '',//TODO inject url
-            'timeout' => 2.0,
-            'auth' => ['', '']//TODO inject credentials
+            'base_uri' => 'http://cryptic-cove-05648.herokuapp.com/',
+            'timeout' => 10.0,
+            'auth' => ['docplanner', 'docplanner']
         ]);
     }
 

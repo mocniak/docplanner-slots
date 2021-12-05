@@ -29,7 +29,7 @@ final class FeatureContext implements Context
     }
 
     /**
-     * @Given in the supplier API there is a doctor :arg1
+     * @Given in the supplier API there is a doctor :doctorName
      */
     public function inTheSupplierApiThereIsADoctor(string $doctorName)
     {
