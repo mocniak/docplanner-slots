@@ -7,10 +7,9 @@ use App\ValueObject\SlotsCollection;
 
 class ByDurationSlotSorter implements SlotsSorter
 {
-
     public function sort(SlotsCollection $slotsCollection): SlotsCollection
     {
-        $clonedSlots = clone($slotsCollection); //we don't want to change existing the collection that is passed
+        $clonedSlots = clone($slotsCollection); //we don't want to change the collection that is passed
         $slotsToSort = $clonedSlots->getSlots();
         usort($slotsToSort, function (Slot $slot1, Slot $slot2) {
             // apparently DateInterval is not comparable in PHP so let's assume that unix timestamp is good enough
@@ -20,5 +19,10 @@ class ByDurationSlotSorter implements SlotsSorter
         });
 
         return SlotsCollection::fromArray($slotsToSort);
+    }
+
+    public function supports(string $sortType): bool
+    {
+        return $sortType === SlotsSorter::TYPE_DURATION;
     }
 }

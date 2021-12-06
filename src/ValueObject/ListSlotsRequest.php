@@ -2,15 +2,14 @@
 declare(strict_types=1);
 
 namespace App\ValueObject;
-use DateTime;
 
 final class ListSlotsRequest
 {
     private string $sortType;
-    private DateTime $dateFrom;
-    private DateTime $dateTo;
+    private ?\DateTimeImmutable $dateFrom;
+    private ?\DateTimeImmutable $dateTo;
 
-    public function __construct(string $sortType, DateTime $dateFrom, DateTime $dateTo)
+    public function __construct(string $sortType, ?\DateTimeImmutable $dateFrom, ?\DateTimeImmutable $dateTo)
     {
         $this->sortType = $sortType;
         $this->dateFrom = $dateFrom;
@@ -22,12 +21,12 @@ final class ListSlotsRequest
         return $this->sortType;
     }
 
-    public function getDateFrom(): DateTime
+    public function getDateFrom(): ?\DateTimeImmutable
     {
         return $this->dateFrom;
     }
 
-    public function getDateTo(): DateTime
+    public function getDateTo(): ?\DateTimeImmutable
     {
         return $this->dateTo;
     }

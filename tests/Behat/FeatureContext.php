@@ -11,6 +11,8 @@ use Behat\Behat\Context\Context;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Webmozart\Assert\Assert;
 
 final class FeatureContext implements Context
@@ -19,6 +21,8 @@ final class FeatureContext implements Context
     private array $doctors;
     private SlotRepository $slotRepository;
     private Application $application;
+    private Kernel $kernel;
+    private ?Response $response;
 
 
     public function __construct(SlotRepository $slotRepository, Kernel $kernel)
@@ -26,6 +30,9 @@ final class FeatureContext implements Context
         $this->application = new Application($kernel);
         $this->slotRepository = $slotRepository;
         $this->doctorCounter = 0;
+        $this->doctors = [];
+        $this->kernel = $kernel;
+        $this->response = null;
     }
 
     /**
@@ -33,7 +40,7 @@ final class FeatureContext implements Context
      */
     public function inTheSupplierApiThereIsADoctor(string $doctorName)
     {
-        $this->doctors[] = ['id' => $this->doctorCounter, 'name' => $doctorName];
+        $this->doctors['name'] = ['id' => $this->doctorCounter, 'name' => $doctorName];
         $this->doctorCounter++;
     }
 
@@ -59,11 +66,11 @@ final class FeatureContext implements Context
     /**
      * @When I see that doctor :doctorName has a slot on :day from :startTime to :endTime
      */
-    public function iSeeThatDoctorHasASlotOnFromTo(string $doctorName, string $day, string $startHour, string $endHour)
+    public function iSeeThatDoctorHasASlotOnFromTo(string $doctorName, string $day, string $startTime, string $endTime)
     {
         $doctorId = array_values(array_filter($this->doctors, fn($doctor) => $doctor['name'] === $doctorName))[0]['id'];
-        $start = new \DateTimeImmutable($day . 'T' . $startHour . ':00');
-        $end = new \DateTimeImmutable($day . 'T' . $endHour . ':00');
+        $start = new \DateTimeImmutable($day . 'T' . $startTime . ':00');
+        $end = new \DateTimeImmutable($day . 'T' . $endTime . ':00');
         Assert::eq(
             count(array_filter(
                 $this->slotRepository->findForDoctor($doctorId),
@@ -74,4 +81,69 @@ final class FeatureContext implements Context
             1
         );
     }
+
+    /**
+     * @Given doctor :doctorName has a slot on :day
+     */
+    public function doctorHasASlotOnFromTo(string $doctorName, string $day)
+    {
+        if (!key_exists($doctorName, $this->doctors)) {
+            $this->doctors[$doctorName] = ['id' => $this->doctorCounter, 'name' => $doctorName];
+            $this->doctorCounter++;
+        }
+        $doctorId = $this->doctors[$doctorName]['id'];
+
+        $this->slotRepository->add(new Slot(
+            $doctorName,
+            new \DateTimeImmutable($day . 'T08:00:00'),
+            new \DateTimeImmutable($day . 'T09:00:00'),
+            $doctorId
+        ));
+    }
+
+    /**
+     * @When I display slot list
+     */
+    public function iDisplaySlotList()
+    {
+        $this->response = $this->kernel->handle(Request::create('/slots', 'GET'));
+    }
+
+    /**
+     * @When I display slot list with slots after :day
+     */
+    public function iDisplaySlotListWithSlotsAfter(string $day)
+    {
+        $this->response = $this->kernel->handle(Request::create('/slots?date_from=' . $day, 'GET'));
+    }
+
+    /**
+     * @Then I see the page
+     */
+    public function iSeeThePage()
+    {
+        Assert::eq($this->response->getStatusCode(), 200);
+    }
+
+    /**
+     * @Then I see :numberOfSlots slots
+     */
+    public function iSeeSlots(string $numberOfSlots)
+    {
+        Assert::eq(count(json_decode($this->response->getContent(), true)), (int)$numberOfSlots);;
+    }
+
+    /**
+     * @Then I see on the page that doctor :doctorName has a slot on :day
+     */
+    public function iSeeOnThePageThatDoctorHasASlotOn(string $doctorName, string $day)
+    {
+        $slots = json_decode($this->response->getContent(), true);
+        $doctorId = $this->doctors[$doctorName]['id'];
+        Assert::notEmpty(array_filter($slots, function (array $row) use ($day, $doctorId) {
+            return $row['doctorId'] === $doctorId
+                && $row['startTime'] === $day . 'T08:00:00+0000';
+        }));
+    }
+
 }

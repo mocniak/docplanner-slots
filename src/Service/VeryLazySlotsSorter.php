@@ -25,4 +25,9 @@ final class VeryLazySlotsSorter implements SlotsSorter
         // And even though, it's so lazy it still does nothing with them
         return $slotsCollection;
     }
+
+    public function supports(string $sortType): bool
+    {
+        return $sortType === SlotsSorter::TYPE_LAZY;
+    }
 }

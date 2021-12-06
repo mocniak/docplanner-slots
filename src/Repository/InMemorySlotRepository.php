@@ -3,28 +3,28 @@
 namespace App\Repository;
 
 use App\Entity\Slot;
+use App\ValueObject\SlotsCollection;
 
 class InMemorySlotRepository implements SlotRepository
 {
-    /**
-     * @var Slot[]
-     */
-    private array $slots;
+    private SlotsCollection $slots;
 
     public function __construct()
     {
-        $this->slots = [];
+        $this->slots = new SlotsCollection();
     }
 
     public function add(Slot $slot): void
     {
-        $this->slots[] = $slot;
+        $this->slots->addSlot($slot);
     }
 
-    /**
-     * @return Slot[]
-     */
-    public function findForDoctor(int $doctorId):array
+    public function findForDoctor(int $doctorId):SlotsCollection
+    {
+        return $this->slots;
+    }
+
+    public function findAll(): SlotsCollection
     {
         return $this->slots;
     }

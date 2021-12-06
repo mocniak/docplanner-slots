@@ -28,4 +28,9 @@ class ClosestAvailableSlotSorter implements SlotsSorter
 
         return SlotsCollection::fromArray($slotsToSort);
     }
+
+    public function supports(string $sortType): bool
+    {
+        return $sortType === SlotsSorter::TYPE_CLOSEST_AVAILABLE;
+    }
 }
