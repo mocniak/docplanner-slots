@@ -21,9 +21,10 @@ class SlotListQuery
         if ($request->getDateFrom() !== null) {
             $filters[] = new LaterThanSlotFilter($request->getDateFrom());
         }
-//        if ($request->getDateTo() !== null) {
-//            $filters[] = SlotsFilter::TYPE_EARLIER_THAN;
-//        }
+        if ($request->getDateTo() !== null) {
+            $filters[] = new EarlierThanSlotFilter($request->getDateTo());
+        }
+
         foreach ($filters as $filter) {
             $slots = $filter->filter($slots);
         }

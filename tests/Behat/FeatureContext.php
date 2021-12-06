@@ -118,6 +118,22 @@ final class FeatureContext implements Context
     }
 
     /**
+     * @When I display slot list with slots before :day
+     */
+    public function iDisplaySlotListWithSlotsBefore(string $day)
+    {
+        $this->response = $this->kernel->handle(Request::create('/slots?date_to=' . $day, 'GET'));
+    }
+
+    /**
+     * @When I display slot list with slots after :dayFrom and before :dayTo
+     */
+    public function iDisplaySlotListWithSlotsAfterAndBefore(string $dayFrom, string $dayTo)
+    {
+        $this->response = $this->kernel->handle(Request::create('/slots?date_from=' . $dayFrom . '&date_to=' . $dayTo, 'GET'));
+    }
+
+    /**
      * @Then I see the page
      */
     public function iSeeThePage()
@@ -126,7 +142,7 @@ final class FeatureContext implements Context
     }
 
     /**
-     * @Then I see :numberOfSlots slots
+     * @Then I see :numberOfSlots slots/slot
      */
     public function iSeeSlots(string $numberOfSlots)
     {

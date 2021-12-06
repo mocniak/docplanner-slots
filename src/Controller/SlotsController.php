@@ -31,8 +31,9 @@ final class SlotsController extends AbstractController
         $slots = $this->listQuery->find(new ListSlotsRequest(
             SlotsSorter::TYPE_DURATION,
             $request->query->get('date_from') !== null ? new \DateTimeImmutable($request->query->get('date_from')) : null,
-            null
+            $request->query->get('date_to') !== null ? new \DateTimeImmutable($request->query->get('date_to')) : null,
         ));
+
         return new JsonResponse(array_map(function (Slot $slot) {
             return [
                 'id' => $slot->id(),
