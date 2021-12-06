@@ -6,6 +6,8 @@ namespace App\Tests\Behat;
 
 use App\Entity\Slot;
 use App\Kernel;
+use App\Query\DoctorFromApi;
+use App\Query\SlotFromApi;
 use App\Repository\SlotRepository;
 use Behat\Behat\Context\Context;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -24,9 +26,15 @@ final class FeatureContext implements Context
     private Kernel $kernel;
     private ?Response $response;
     private FakeClock $fakeClock;
+    private StubSupplierAPI $supplierAPI;
 
 
-    public function __construct(SlotRepository $slotRepository, Kernel $kernel, FakeClock $fakeClock)
+    public function __construct(
+        SlotRepository $slotRepository,
+        Kernel $kernel,
+        FakeClock $fakeClock,
+        StubSupplierAPI $supplierAPI
+    )
     {
         $this->application = new Application($kernel);
         $this->slotRepository = $slotRepository;
@@ -35,6 +43,7 @@ final class FeatureContext implements Context
         $this->kernel = $kernel;
         $this->response = null;
         $this->fakeClock = $fakeClock;
+        $this->supplierAPI = $supplierAPI;
     }
 
     /**
@@ -50,17 +59,22 @@ final class FeatureContext implements Context
      */
     public function inTheSupplierApiThereIsADoctor(string $doctorName)
     {
-        $this->doctors[$doctorName] = ['id' => $this->doctorCounter, 'name' => $doctorName];
+        $this->supplierAPI->addDoctor(new DoctorFromApi($this->doctorCounter, $doctorName));
         $this->doctorCounter++;
     }
 
     /**
-     * @Given the API says that doctor :arg1 has a slot on :arg2 from :arg3 to :arg4
+     * @Given the API says that doctor :doctorName has a slot on :day from :startTime to :endTime
      */
-    public function theApiSaysThatDoctorHasASlotOnFromTo($arg1, $arg2, $arg3, $arg4)
+    public function theApiSaysThatDoctorHasASlotOnFromTo(string $doctorName, string $day, string $startTime, string $endTime)
     {
-        // do nothing, we're using live API for now
-        // TODO: replace with stub API
+        $this->supplierAPI->addSlot(
+            new SlotFromApi(
+                new \DateTimeImmutable($day . 'T' . $startTime . ':00'),
+                new \DateTimeImmutable($day . 'T' . $endTime . ':00'),
+            ),
+            $this->supplierAPI->getDoctorByName($doctorName)->id()
+        );
     }
 
     /**
@@ -78,14 +92,16 @@ final class FeatureContext implements Context
      */
     public function iSeeThatDoctorHasASlotOnFromTo(string $doctorName, string $day, string $startTime, string $endTime)
     {
-        $doctorId = $this->doctors[$doctorName]['id'];
+        $doctorId = $this->supplierAPI->getDoctorByName($doctorName)->id();
         $expectedStart = new \DateTimeImmutable($day . 'T' . $startTime . ':00');
         $expectedEnd = new \DateTimeImmutable($day . 'T' . $endTime . ':00');
         Assert::eq(
             count(array_filter(
-                $this->slotRepository->findForDoctor($doctorId)->getSlots(),
-                function (Slot $slot) use ($expectedStart, $expectedEnd) {
-                    return $slot->startTime() == $expectedStart && $slot->endTime() == $expectedEnd;
+                $this->slotRepository->findAll()->getSlots(),
+                function (Slot $slot) use ($expectedStart, $expectedEnd, $doctorId) {
+                    return $slot->startTime() == $expectedStart
+                        && $slot->endTime() == $expectedEnd
+                        && $slot->doctorId() === $doctorId;
                 }
             )),
             1

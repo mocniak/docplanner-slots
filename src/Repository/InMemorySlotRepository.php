@@ -19,11 +19,6 @@ class InMemorySlotRepository implements SlotRepository
         $this->slots->addSlot($slot);
     }
 
-    public function findForDoctor(int $doctorId):SlotsCollection
-    {
-        return $this->slots;
-    }
-
     public function findAll(): SlotsCollection
     {
         return $this->slots;

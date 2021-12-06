@@ -9,7 +9,5 @@ interface SlotRepository
 {
     public function add(Slot $slot): void;
 
-    public function findForDoctor(int $doctorId): SlotsCollection;
-
     public function findAll(): SlotsCollection;
 }
