@@ -5,6 +5,7 @@ services:
 
     App\Repository\SlotRepository: '@App\Repository\InMemorySlotRepository'
     App\Query\SupplierAPI: '@App\Tests\Behat\StubSupplierAPI'
+    App\Utils\Clock: '@App\Tests\Behat\FakeClock'
 
     App\Tests\Behat\:
         resource: '../tests/Behat/*'

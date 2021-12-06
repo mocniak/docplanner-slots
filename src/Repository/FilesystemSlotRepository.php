@@ -7,7 +7,7 @@ use App\ValueObject\SlotsCollection;
 
 class FilesystemSlotRepository implements SlotRepository
 {
-    const SUPER_SECURE_STORAGE = '/secret/slots.txt';
+    const SUPER_SECURE_STORAGE = '/storage/slots.txt';
     private array $slots;
     private string $basePath;
 

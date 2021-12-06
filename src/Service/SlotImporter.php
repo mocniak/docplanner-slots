@@ -20,10 +20,8 @@ class SlotImporter
     public function importAll(): void
     {
         $doctors = $this->doctorsFromAPI->findAllDoctors();
-        $doctors = array_slice($doctors,0, 2);
         foreach ($doctors as $doctor) {
             $slots = $this->doctorsFromAPI->findSlotsForADoctor($doctor->id());
-            $slots = array_slice($slots, 0, 2);
             foreach ($slots as $slot) {
                 $this->slotRepository->add(new Slot(uniqid(),$slot->start(), $slot->end(),$doctor->id()));
             }
