@@ -29,7 +29,7 @@ final class SlotsController extends AbstractController
     public function list(Request $request): Response
     {
         $slots = $this->listQuery->find(new ListSlotsRequest(
-            SlotsSorter::TYPE_DURATION,
+            $request->query->get('sort_type'),
             $request->query->get('date_from') !== null ? new \DateTimeImmutable($request->query->get('date_from')) : null,
             $request->query->get('date_to') !== null ? new \DateTimeImmutable($request->query->get('date_to')) : null,
         ));

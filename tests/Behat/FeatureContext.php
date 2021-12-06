@@ -23,9 +23,10 @@ final class FeatureContext implements Context
     private Application $application;
     private Kernel $kernel;
     private ?Response $response;
+    private FakeClock $fakeClock;
 
 
-    public function __construct(SlotRepository $slotRepository, Kernel $kernel)
+    public function __construct(SlotRepository $slotRepository, Kernel $kernel, FakeClock $fakeClock)
     {
         $this->application = new Application($kernel);
         $this->slotRepository = $slotRepository;
@@ -33,6 +34,15 @@ final class FeatureContext implements Context
         $this->doctors = [];
         $this->kernel = $kernel;
         $this->response = null;
+        $this->fakeClock = $fakeClock;
+    }
+
+    /**
+     * @Given today is :day
+     */
+    public function todayIs(string $day)
+    {
+        $this->fakeClock->setCurrentTime(new \DateTimeImmutable($day));
     }
 
     /**
@@ -85,7 +95,7 @@ final class FeatureContext implements Context
     /**
      * @Given doctor :doctorName has a slot on :day
      */
-    public function doctorHasASlotOnFromTo(string $doctorName, string $day)
+    public function doctorHasASlotOnFrom(string $doctorName, string $day)
     {
         if (!key_exists($doctorName, $this->doctors)) {
             $this->doctors[$doctorName] = ['id' => $this->doctorCounter, 'name' => $doctorName];
@@ -97,6 +107,25 @@ final class FeatureContext implements Context
             $doctorName,
             new \DateTimeImmutable($day . 'T08:00:00'),
             new \DateTimeImmutable($day . 'T09:00:00'),
+            $doctorId
+        ));
+    }
+
+    /**
+     * @Given doctor :doctorName has a :slotDuration minute slot on :day
+     */
+    public function doctorHasANMinuteSlot(string $doctorName, string $slotDuration, string $day)
+    {
+        if (!key_exists($doctorName, $this->doctors)) {
+            $this->doctors[$doctorName] = ['id' => $this->doctorCounter, 'name' => $doctorName];
+            $this->doctorCounter++;
+        }
+        $doctorId = $this->doctors[$doctorName]['id'];
+
+        $this->slotRepository->add(new Slot(
+            $doctorName,
+            new \DateTimeImmutable($day . 'T08:00:00'),
+            new \DateTimeImmutable($day . 'T08:' . $slotDuration . ':00'),
             $doctorId
         ));
     }
@@ -134,6 +163,14 @@ final class FeatureContext implements Context
     }
 
     /**
+     * @When I display slot list ordered by :sortType
+     */
+    public function iDisplaySlotListOrderedBy(string $sortType)
+    {
+        $this->response = $this->kernel->handle(Request::create('/slots?sort_type=' . $sortType, 'GET'));
+    }
+
+    /**
      * @Then I see the page
      */
     public function iSeeThePage()
@@ -160,6 +197,25 @@ final class FeatureContext implements Context
             return $row['doctorId'] === $doctorId
                 && $row['startTime'] === $day . 'T08:00:00+0000';
         }));
+    }
+
+    /**
+     * @Then the :nth result is doctor :doctorName's slot on :day
+     */
+    public function theNthResultIsDoctorSSlotOn(int $nth, string $doctorName, string $day)
+    {
+        $slots = json_decode($this->response->getContent(), true);
+        $doctorId = $this->doctors[$doctorName]['id'];
+        Assert::eq($slots[$nth - 1]['doctorId'], $doctorId);
+        Assert::eq($slots[$nth - 1]['startTime'], $day . 'T08:00:00+0000');
+    }
+
+    /**
+     * @Transform /^(\d+)(st|nd|rd|th)$/
+     */
+    public function castCardinalToNumber($cardinal, $remainder)
+    {
+        return intval($cardinal);
     }
 
 }
