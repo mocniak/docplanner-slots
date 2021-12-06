@@ -5,18 +5,18 @@ namespace App\ValueObject;
 
 final class ListSlotsRequest
 {
-    private string $sortType;
+    private ?string $sortType;
     private ?\DateTimeImmutable $dateFrom;
     private ?\DateTimeImmutable $dateTo;
 
-    public function __construct(string $sortType, ?\DateTimeImmutable $dateFrom, ?\DateTimeImmutable $dateTo)
+    public function __construct(?string $sortType, ?\DateTimeImmutable $dateFrom, ?\DateTimeImmutable $dateTo)
     {
         $this->sortType = $sortType;
         $this->dateFrom = $dateFrom;
         $this->dateTo = $dateTo;
     }
 
-    public function getSortType(): string
+    public function getSortType(): ?string
     {
         return $this->sortType;
     }

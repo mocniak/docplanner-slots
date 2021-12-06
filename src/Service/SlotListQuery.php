@@ -38,7 +38,6 @@ class SlotListQuery
         } elseif ($request->getSortType() === SlotsSorter::TYPE_DURATION) {
             $sorter = new ByDurationSlotSorter();
         } else {
-            
             return $slots;
         }
 
