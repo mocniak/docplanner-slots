@@ -50,7 +50,7 @@ final class FeatureContext implements Context
      */
     public function inTheSupplierApiThereIsADoctor(string $doctorName)
     {
-        $this->doctors['name'] = ['id' => $this->doctorCounter, 'name' => $doctorName];
+        $this->doctors[$doctorName] = ['id' => $this->doctorCounter, 'name' => $doctorName];
         $this->doctorCounter++;
     }
 
@@ -78,14 +78,14 @@ final class FeatureContext implements Context
      */
     public function iSeeThatDoctorHasASlotOnFromTo(string $doctorName, string $day, string $startTime, string $endTime)
     {
-        $doctorId = array_values(array_filter($this->doctors, fn($doctor) => $doctor['name'] === $doctorName))[0]['id'];
-        $start = new \DateTimeImmutable($day . 'T' . $startTime . ':00');
-        $end = new \DateTimeImmutable($day . 'T' . $endTime . ':00');
+        $doctorId = $this->doctors[$doctorName]['id'];
+        $expectedStart = new \DateTimeImmutable($day . 'T' . $startTime . ':00');
+        $expectedEnd = new \DateTimeImmutable($day . 'T' . $endTime . ':00');
         Assert::eq(
             count(array_filter(
-                $this->slotRepository->findForDoctor($doctorId),
-                function (Slot $slot) use ($start, $end) {
-                    return $slot->startTime() == $start && $slot->endTime() == $end;
+                $this->slotRepository->findForDoctor($doctorId)->getSlots(),
+                function (Slot $slot) use ($expectedStart, $expectedEnd) {
+                    return $slot->startTime() == $expectedStart && $slot->endTime() == $expectedEnd;
                 }
             )),
             1
