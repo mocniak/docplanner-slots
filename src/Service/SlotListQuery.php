@@ -21,6 +21,9 @@ class SlotListQuery
     public function find(ListSlotsRequest $request): SlotsCollection
     {
         $slots = $this->repository->findAll();
+
+        // TODO: create a proper resolver which uses tagged services
+        // TODO: decide which filter applies based on SlotsFilter->supports()
         $filters = [];
         if ($request->getDateFrom() !== null) {
             $filters[] = new LaterThanSlotFilter($request->getDateFrom());
@@ -33,6 +36,7 @@ class SlotListQuery
             $slots = $filter->filter($slots);
         }
 
+        // TODO: same as above for sorter
         if ($request->getSortType() === SlotsSorter::TYPE_CLOSEST_AVAILABLE) {
             $sorter = new ClosestAvailableSlotSorter($this->clock);
         } elseif ($request->getSortType() === SlotsSorter::TYPE_DURATION) {

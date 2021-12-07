@@ -12,6 +12,7 @@ The project is dockerized and configured to work with docker-compose
 - after a while, the app should be accessible on `http://localhost:3160`
 
 ## Tests
+
 - behat: `APP_ENV=test vendor/bin/behat` in php container
 - unit: `vendor/bin/phpunit` in php container
 
@@ -22,4 +23,5 @@ All mentioned in the code and also:
 - unit tests for services
 - make endpoint documentation with OpenAPI/Swagger
 - configure code style checker with PHPCS
+- enforce `declare(strict_types=1);` in code style
 - configure static code analysis with PHPStan
