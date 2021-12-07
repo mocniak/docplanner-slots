@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Query;
+namespace App\Supplier;
 
 use GuzzleHttp\Client;
 

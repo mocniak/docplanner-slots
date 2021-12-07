@@ -19,6 +19,7 @@ The project is dockerized and configured to work with docker-compose
 
 All mentioned in the code and also:
 
+- unit tests for services
 - make endpoint documentation with OpenAPI/Swagger
 - configure code style checker with PHPCS
 - configure static code analysis with PHPStan

@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Slot;
-use App\Query\SupplierAPI;
+use App\Supplier\SupplierAPI;
 use App\Repository\SlotRepository;
 
 class SlotImporter

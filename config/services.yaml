@@ -31,9 +31,9 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     App\Repository\SlotRepository: '@App\Repository\FilesystemSlotRepository'
-    App\Query\SupplierAPI: '@App\Query\HttpSupplierApi'
+    App\Supplier\SupplierAPI: '@App\Supplier\HttpSupplierApi'
     App\Utils\Clock: '@App\Utils\RealClock'
-    App\Query\HttpSupplierApi:
+    App\Supplier\HttpSupplierApi:
         arguments:
             - '%env(resolve:DOCPLANNER_API_USERNAME)%'
             - '%env(resolve:DOCPLANNER_API_PASSWORD)%'

@@ -2,9 +2,9 @@
 
 namespace App\Tests\Behat;
 
-use App\Query\DoctorFromApi;
-use App\Query\SlotFromApi;
-use App\Query\SupplierAPI;
+use App\Supplier\DoctorFromApi;
+use App\Supplier\SlotFromApi;
+use App\Supplier\SupplierAPI;
 
 class StubSupplierAPI implements SupplierAPI
 {

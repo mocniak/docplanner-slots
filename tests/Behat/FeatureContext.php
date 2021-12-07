@@ -6,8 +6,8 @@ namespace App\Tests\Behat;
 
 use App\Entity\Slot;
 use App\Kernel;
-use App\Query\DoctorFromApi;
-use App\Query\SlotFromApi;
+use App\Supplier\DoctorFromApi;
+use App\Supplier\SlotFromApi;
 use App\Repository\SlotRepository;
 use Behat\Behat\Context\Context;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
