@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Slot;
 use App\ValueObject\SlotsCollection;
 
+// TODO: instead sorting array of objects in PHP use the DB/search engine mechanisms and specification pattern
 class ByDurationSlotSorter implements SlotsSorter
 {
     public function sort(SlotsCollection $slotsCollection): SlotsCollection

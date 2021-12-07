@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Slot;
 use App\ValueObject\SlotsCollection;
 
+// TODO: move to test namespace
 class InMemorySlotRepository implements SlotRepository
 {
     private SlotsCollection $slots;

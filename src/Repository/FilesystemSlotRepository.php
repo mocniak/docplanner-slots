@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Slot;
 use App\ValueObject\SlotsCollection;
 
+// TODO: use real database
 class FilesystemSlotRepository implements SlotRepository
 {
     const SUPER_SECURE_STORAGE = '/storage/slots.txt';

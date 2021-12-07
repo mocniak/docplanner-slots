@@ -20,6 +20,7 @@ class ImportSlotsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        //TODO: log and inform about errors
         $this->slotImporter->importAll();
 
         return Command::SUCCESS;

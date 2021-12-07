@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Slot;
 use App\ValueObject\SlotsCollection;
 
+// TODO: instead filtering array of objects in PHP use the DB/search engine mechanisms and specification pattern
 class EarlierThanSlotFilter implements SlotsFilter
 {
     private \DateTimeImmutable $dateFrom;

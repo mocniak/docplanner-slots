@@ -10,6 +10,7 @@ class HttpSupplierApi implements SupplierAPI
 
     public function __construct(string $supplierApiUser, string $supplierApiPassword)
     {
+        // TODO: url from injected parameter
         $this->client = new Client([
             'base_uri' => 'http://cryptic-cove-05648.herokuapp.com/',
             'timeout' => 10.0,
@@ -22,6 +23,7 @@ class HttpSupplierApi implements SupplierAPI
      */
     public function findAllDoctors(): array
     {
+        //TODO: error handling
         $result = $this->client->get('/api/doctors');
         return array_map(
             fn(array $row) => new DoctorFromApi((int)$row['id'], $row['name']),
@@ -31,6 +33,7 @@ class HttpSupplierApi implements SupplierAPI
 
     public function findSlotsForADoctor(int $doctorId): array
     {
+        //TODO: error handling
         $result = $this->client->get('/api/doctors/' . (string)$doctorId . '/slots');
         return array_map(
             fn(array $row) => new SlotFromApi(new \DateTimeImmutable($row['start']), new \DateTimeImmutable($row['end'])),

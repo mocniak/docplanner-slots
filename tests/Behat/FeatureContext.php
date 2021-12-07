@@ -17,6 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Webmozart\Assert\Assert;
 
+// TODO: split to smaller contexts
+// TODO: remove code duplications
 final class FeatureContext implements Context
 {
     private int $doctorCounter;

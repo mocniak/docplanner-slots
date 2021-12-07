@@ -6,6 +6,19 @@ This repository is based on PHP 8 and Symfony 5
 
 The project is dockerized and configured to work with docker-compose
 
- - to run the container, use `docker-compose up -d`
- - after a while, the app should be accessible on `http://localhost:3160`
+- to run the container, use `docker-compose up -d`
+- get in container, use `bin/console secrets:set DOCPLANNER_API_PASSWORD`
+  and `bin/console secrets:set DOCPLANNER_API_USERNAME` to set supplier API credentials
+- after a while, the app should be accessible on `http://localhost:3160`
 
+## Tests
+- behat: `APP_ENV=test vendor/bin/behat` in php container
+- unit: `vendor/bin/phpunit` in php container
+
+## TODOs
+
+All mentioned in the code and also:
+
+- make endpoint documentation with OpenAPI/Swagger
+- configure code style checker with PHPCS
+- configure static code analysis with PHPStan

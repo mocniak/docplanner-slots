@@ -4,6 +4,7 @@ namespace App\Query;
 
 class SlotFromApi
 {
+    // TODO: migrate to PHP 8.1 and use public readonly fields
     private \DateTimeImmutable $start;
     private \DateTimeImmutable $end;
 

@@ -4,6 +4,7 @@ namespace App\Query;
 
 class DoctorFromApi
 {
+    // TODO: migrate to PHP 8.1 and use public readonly fields
     private int $id;
     private string $name;
 

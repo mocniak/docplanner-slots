@@ -19,11 +19,18 @@ class SlotImporter
 
     public function importAll(): void
     {
+        // TODO: handle errors
         $doctors = $this->doctorsFromAPI->findAllDoctors();
         foreach ($doctors as $doctor) {
-            $slots = $this->doctorsFromAPI->findSlotsForADoctor($doctor->id());
-            foreach ($slots as $slot) {
-                $this->slotRepository->add(new Slot(uniqid(),$slot->start(), $slot->end(),$doctor->id()));
+            try {
+                $slots = $this->doctorsFromAPI->findSlotsForADoctor($doctor->id());
+                foreach ($slots as $slot) {
+                    $this->slotRepository->add(new Slot(uniqid(),$slot->start(), $slot->end(),$doctor->id()));
+                }
+            } catch (\Exception $exception) {
+                // TODO: use more specific exception
+                // TODO: log error
+                // TODO: decide whether to stop the whole import or continue
             }
         }
     }
